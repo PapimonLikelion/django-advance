@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBV CRUD BLOG</title>
+</head>
+<body>
+    <a href="{% url 'create' %}">Create</a>
+
+    {% for blog in object_list %}
+        <h2>{{blog.title}}</h2>
+        <h5>{{blog.created_at}}</h5>
+        <p>{{blog.body}}</p>
+        <a href="{% url 'detail' blog.id %}">Detail</a>
+        <a href="{% url 'update' blog.id %}">Update</a>
+        <a href="{% url 'delete' blog.id %}">Delete</a>
+        <hr>
+    {% endfor %}
+</body>
+</html>
