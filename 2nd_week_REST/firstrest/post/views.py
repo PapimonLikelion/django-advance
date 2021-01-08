@@ -12,11 +12,11 @@
 # # from django.shortcuts import get_object_or_404
 
 ####### Mixin ########
-from post.models import Post
-from post.serializer import PostSerializer
+# from post.models import Post
+# from post.serializer import PostSerializer
 
-from rest_framework import generics
-from rest_framework import mixins
+# from rest_framework import generics
+# from rest_framework import mixins
 
 ####### API VIEW ########
 # class PostList(APIView):
@@ -33,17 +33,17 @@ from rest_framework import mixins
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-####### Mixin ########
-class PostList(mixins.ListModelMixin, mixins.CreateModelMixin, 
-                generics.GenericAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
+# ####### Mixin ########
+# class PostList(mixins.ListModelMixin, mixins.CreateModelMixin, 
+#                 generics.GenericAPIView):
+#     queryset = Post.objects.all()
+#     serializer_class = PostSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+#     def get(self, request, *args, **kwargs):
+#         return self.list(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)
 
 ####### API VIEW ########
 # # PostList 클래스와 달리 pk값을 받음 (메소드에 pk 인자 포함)
@@ -75,16 +75,45 @@ class PostList(mixins.ListModelMixin, mixins.CreateModelMixin,
 #         return Response(status=status.HTTP_204_NO_CONTENT)
 
 ####### Mixin ########
-class PostDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, 
-                mixins.DestroyModelMixin, generics.GenericAPIView):
+# class PostDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, 
+#                 mixins.DestroyModelMixin, generics.GenericAPIView):
+#     queryset = Post.objects.all()
+#     serializer_class = PostSerializer
+
+#     def get(self, request, *args, **kwargs):
+#         return self.retrieve(request, *args, **kwargs)
+
+#     def put(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
+    
+#     def delete(self, request, *args, **kwargs):
+#         return self.destroy(request, *args, **kwargs)
+
+####### ViewSet #######
+from post.models import Post
+from post.serializer import PostSerializer
+
+from rest_framework import viewsets
+
+# @action 처리 
+from rest_framework import renderers
+from rest_framework.decorators import action
+from django.http import HttpResponse
+
+'''
+# ReadOnlyModelViewSet은 말 그대로 ListView, DetailView의 ``조회``만 가능하다. 
+class PostViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+'''
+
+# ModelViewSet은 CRUD가 모두 가능하다. 
+class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-    
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+    # 그냥 얍을 띄워주는 custom API
+    # ~~/post/2/highlight ==> HTML에 얍 띄워줌
+    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
+    def highlight(self, request, *args, **kwargs):
+        return HttpResponse("얍")
