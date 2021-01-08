@@ -11,4 +11,4 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'body']
         
         # 사람들이 꼭 이건 못바꿨으면 좋겠어! RO 항목!
-        read_only_fields = ('title', )
+        # read_only_fields = ('title', )
