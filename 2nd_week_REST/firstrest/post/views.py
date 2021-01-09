@@ -100,6 +100,9 @@ from rest_framework import renderers
 from rest_framework.decorators import action
 from django.http import HttpResponse
 
+# Customized Pagination 만든 후 import
+from .pagination import MyPagination
+
 '''
 # ReadOnlyModelViewSet은 말 그대로 ListView, DetailView의 ``조회``만 가능하다. 
 class PostViewSet(viewsets.ReadOnlyModelViewSet):
@@ -107,13 +110,17 @@ class PostViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PostSerializer
 '''
 
+
 # ModelViewSet은 CRUD가 모두 가능하다. 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
+    queryset = Post.objects.all().order_by('id')
     serializer_class = PostSerializer
+    pagination_class = MyPagination
 
     # 그냥 얍을 띄워주는 custom API
     # ~~/post/2/highlight ==> HTML에 얍 띄워줌
     @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
     def highlight(self, request, *args, **kwargs):
         return HttpResponse("얍")
+
+# 페이지네이션 할 때에는 반드시 레코드를 정렬한 상태에서 수행하자! 
