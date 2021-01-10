@@ -6,7 +6,7 @@ from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
 
 class UserPostViewSet(viewsets.ModelViewSet):
-    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
 
     queryset = UserPost.objects.all()
