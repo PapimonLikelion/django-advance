@@ -1,9 +1,12 @@
 from rest_framework import viewsets
-from .models import Essay
-from .serializers import EssaySerializer
+from .models import Essay, Album, Files
+from .serializers import EssaySerializer, AlbumSerializer, FilesSerializer
 from rest_framework.filters import SearchFilter # Search 기능을 import 해와서 구현하자!
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from rest_framework import status
 
-class PostViewSet(viewsets.ModelViewSet):
+class EssayViewSet(viewsets.ModelViewSet):
     queryset = Essay.objects.all()
     serializer_class = EssaySerializer
 
@@ -21,3 +24,22 @@ class PostViewSet(viewsets.ModelViewSet):
         else:
             queryset = queryset.none()
         return queryset
+
+class AlbumViewSet(viewsets.ModelViewSet):
+    queryset = Album.objects.all()
+    serializer_class = AlbumSerializer
+
+class FilesViewSet(viewsets.ModelViewSet):
+    queryset = Files.objects.all()
+    serializer_class = FilesSerializer
+
+    # parser_class -- 다양한 파일 형식의 인코딩을 지원해주자!
+    parser_classes = (MultiPartParser, FormParser)
+    
+    # create logic -- POST 요청 따라서 포스트를 오버라이딩 해보자
+    def post(self, request, *args, **kwargs):
+        serializer = FilesSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=HTTP_201_CREATED)
+        return Response(serializer.error, status=HTTP_400_BAD_REQUEST)

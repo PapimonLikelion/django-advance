@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -120,3 +121,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# 미디어를 직접 올릴 수 있게! 어디로 미디어를 저장할 것인지
+MEDIA_URL = '/media/'
+# BASE_DIR = 지금 우리 파이썬 프로젝트 있는 곳
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # 사용자가 업로드한 파일을 관리한다. 
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINAION_CLASS' : 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE' : 10, 
+
+    'DEFAULT_AUTHENTICATION_CLASSES' : [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+
+    'DEFAULT_PERMISSION_CLASSES' : [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
